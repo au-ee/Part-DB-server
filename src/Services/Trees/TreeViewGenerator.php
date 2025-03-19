@@ -22,6 +22,7 @@ declare(strict_types=1);
 
 namespace App\Services\Trees;
 
+use App\Entity\AssemblySystem\Assembly;
 use App\Entity\Base\AbstractDBElement;
 use App\Entity\Base\AbstractNamedDBElement;
 use App\Entity\Base\AbstractStructuralDBElement;
@@ -150,6 +151,10 @@ class TreeViewGenerator
             $href_type = 'list_parts';
         }
 
+        if ($mode === 'assemblies') {
+            $href_type = 'list_parts';
+        }
+
         $generic = $this->getGenericTree($class, $parent);
         $treeIterator = new TreeViewNodeIterator($generic);
         $recursiveIterator = new RecursiveIteratorIterator($treeIterator, RecursiveIteratorIterator::SELF_FIRST);
@@ -215,6 +220,7 @@ class TreeViewGenerator
             Manufacturer::class => $this->translator->trans('manufacturer.labelp'),
             Supplier::class => $this->translator->trans('supplier.labelp'),
             Project::class => $this->translator->trans('project.labelp'),
+            Assembly::class => $this->translator->trans('assembly.labelp'),
             default => $this->translator->trans('tree.root_node.text'),
         };
     }
@@ -229,6 +235,7 @@ class TreeViewGenerator
             Manufacturer::class => $icon.'fa-industry',
             Supplier::class => $icon.'fa-truck',
             Project::class => $icon.'fa-archive',
+            Assembly::class => $icon.'fa-list',
             default => null,
         };
     }
