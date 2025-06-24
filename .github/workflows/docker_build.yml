@@ -25,7 +25,7 @@ jobs:
         with:
           # list of Docker images to use as base name for tags
           images: |
-            jbtronics/part-db1
+            apscloudops/part-db1
           # Mark the image build from master as latest (as we dont have really releases yet)
           tags: |
             type=edge,branch=master
