@@ -66,7 +66,9 @@ class TreeViewGenerator
         protected bool $rootNodeEnabled,
         //TODO: Make this configurable in the future
         protected bool $rootNodeRedirectsToNewEntity = false,
+        protected ?array $dataSourceSynonyms = [],
     ) {
+        $this->dataSourceSynonyms = $dataSourceSynonyms ?? [];
     }
 
     /**
@@ -222,14 +224,16 @@ class TreeViewGenerator
 
     protected function entityClassToRootNodeString(string $class): string
     {
+        $locale = $this->translator->getLocale();
+
         return match ($class) {
-            Category::class => $this->translator->trans('category.labelp'),
-            StorageLocation::class => $this->translator->trans('storelocation.labelp'),
-            Footprint::class => $this->translator->trans('footprint.labelp'),
-            Manufacturer::class => $this->translator->trans('manufacturer.labelp'),
-            Supplier::class => $this->translator->trans('supplier.labelp'),
-            Project::class => $this->translator->trans('project.labelp'),
-            Assembly::class => $this->translator->trans('assembly.labelp'),
+            Category::class => $this->getTranslatedOrSynonym('category', $locale),
+            StorageLocation::class => $this->getTranslatedOrSynonym('storelocation', $locale),
+            Footprint::class => $this->getTranslatedOrSynonym('footprint', $locale),
+            Manufacturer::class => $this->getTranslatedOrSynonym('manufacturer', $locale),
+            Supplier::class => $this->getTranslatedOrSynonym('supplier', $locale),
+            Project::class => $this->getTranslatedOrSynonym('project', $locale),
+            Assembly::class => $this->getTranslatedOrSynonym('assembly', $locale),
             default => $this->translator->trans('tree.root_node.text'),
         };
     }
@@ -285,5 +289,23 @@ class TreeViewGenerator
             $item->tag(['groups', 'tree_treeview', $this->keyGenerator->generateKey(), $secure_class_name]);
             return $repo->getGenericNodeTree($parent); //@phpstan-ignore-line
         });
+    }
+
+    protected function getTranslatedOrSynonym(string $key, string $locale): string
+    {
+        $currentTranslation = $this->translator->trans($key . '.labelp');
+
+        // Call alternatives from DataSourcesynonyms (if available)
+        if (!empty($this->dataSourceSynonyms[$key][$locale])) {
+            $alternativeTranslation = $this->dataSourceSynonyms[$key][$locale];
+
+            // Use alternative translation when it deviates from the standard translation
+            if ($alternativeTranslation !== $currentTranslation) {
+                return $alternativeTranslation;
+            }
+        }
+
+        // Otherwise return the standard translation
+        return $currentTranslation;
     }
 }
