@@ -507,7 +507,7 @@ class BOMImporter
                 $values = str_getcsv($row, ';');
             }
 
-            if ($row === '' || count($values) === 1) {
+            if (trim($row) === '' || count($values) === 1) {
                 continue;
             }
 
