@@ -25,6 +25,7 @@ namespace App\Form\Filters;
 use App\DataTables\Filters\Constraints\Part\BulkImportPartStatusConstraint;
 use App\DataTables\Filters\Constraints\Part\ParameterConstraint;
 use App\DataTables\Filters\PartFilter;
+use App\Entity\AssemblySystem\Assembly;
 use App\Entity\Attachments\AttachmentType;
 use App\Entity\InfoProviderSystem\BulkImportJobStatus;
 use App\Entity\InfoProviderSystem\BulkImportPartStatus;
@@ -37,9 +38,6 @@ use App\Entity\Parts\StorageLocation;
 use App\Entity\Parts\Supplier;
 use App\Entity\ProjectSystem\Project;
 use App\Form\Filters\Constraints\BooleanConstraintType;
-use App\Form\Filters\Constraints\BulkImportJobExistsConstraintType;
-use App\Form\Filters\Constraints\BulkImportJobStatusConstraintType;
-use App\Form\Filters\Constraints\BulkImportPartStatusConstraintType;
 use App\Form\Filters\Constraints\ChoiceConstraintType;
 use App\Form\Filters\Constraints\DateTimeConstraintType;
 use App\Form\Filters\Constraints\EnumConstraintType;
@@ -311,6 +309,26 @@ class PartFilterType extends AbstractType
                 ])
             ;
 
+        }
+
+        /**************************************************************************
+         * Assembly tab
+         **************************************************************************/
+        if ($this->security->isGranted('read', Assembly::class)) {
+            $builder
+                ->add('assembly', StructuralEntityConstraintType::class, [
+                    'label' => 'assembly.label',
+                    'entity_class' => Assembly::class
+                ])
+                ->add('assemblyBomQuantity', NumberConstraintType::class, [
+                    'label' => 'assembly.bom.quantity',
+                    'min' => 0,
+                    'step' => "any",
+                ])
+                ->add('assemblyBomName', TextConstraintType::class, [
+                    'label' => 'assembly.bom.name',
+                ])
+            ;
         }
 
         /**************************************************************************
