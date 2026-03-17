@@ -8,8 +8,7 @@ on:
   #  - cron: '0 10 * * *' # everyday at 10am
   push:
     branches:
-      - '**'
-      - '!l10n_**'
+      - 'blubb'
     tags:
       - 'v*.*.*'
       - 'v*.*.*-**'

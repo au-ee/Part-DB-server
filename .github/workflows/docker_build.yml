@@ -28,7 +28,7 @@ jobs:
         with:
           # list of Docker images to use as base name for tags
           images: |
-            jbtronics/part-db1
+            apscloudops/part-db1
           # Mark the image build from master as latest (as we dont have really releases yet)
           tags: |
             type=edge,branch=master
@@ -50,11 +50,11 @@ jobs:
             org.opencontainers.image.authors=Jan Böhmer
             org.opencontainers.licenses=AGPL-3.0-or-later
 
-      -
-        name: Set up QEMU
-        uses: docker/setup-qemu-action@v3
-        with:
-          platforms: 'arm64,arm'
+      # -
+      #   name: Set up QEMU
+      #   uses: docker/setup-qemu-action@v3
+      #   with:
+      #     platforms: 'arm64,arm'
       -
         name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
@@ -71,7 +71,7 @@ jobs:
         uses: docker/build-push-action@v6
         with:
           context: .
-          platforms: linux/amd64,linux/arm64,linux/arm/v7
+          platforms: linux/amd64
           push: ${{ github.event_name != 'pull_request' }}
           tags: ${{ steps.docker_meta.outputs.tags }}
           labels: ${{ steps.docker_meta.outputs.labels }}
